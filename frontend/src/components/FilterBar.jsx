@@ -46,7 +46,7 @@ const FilterBar = ({ onFilter, loading }) => {
                             name="startDate"
                             value={filters.startDate}
                             onChange={handleChange}
-                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%', color: '#334155' }}
+                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%' }}
                         />
                         <span style={{ color: '#94a3b8' }}>—</span>
                         <input
@@ -54,7 +54,7 @@ const FilterBar = ({ onFilter, loading }) => {
                             name="endDate"
                             value={filters.endDate}
                             onChange={handleChange}
-                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%', color: '#334155' }}
+                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%' }}
                         />
                     </div>
                 </div>
@@ -65,7 +65,7 @@ const FilterBar = ({ onFilter, loading }) => {
                         name="gender"
                         value={filters.gender}
                         onChange={handleChange}
-                        style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%', color: '#334155' }}
+                        style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%' }}
                     >
                         <option value="all">All Genders</option>
                         <option value="Male">Male</option>
@@ -79,7 +79,7 @@ const FilterBar = ({ onFilter, loading }) => {
                         name="category"
                         value={filters.category}
                         onChange={handleChange}
-                        style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%', color: '#334155' }}
+                        style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '100%' }}
                     >
                         <option value="all">All Categories</option>
                         <option value="Electronics">Electronics</option>
@@ -97,7 +97,7 @@ const FilterBar = ({ onFilter, loading }) => {
                             value={filters.ageMin}
                             onChange={handleChange}
                             placeholder="Min"
-                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '60px', color: '#334155' }}
+                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '60px' }}
                         />
                         <span style={{ color: '#94a3b8' }}>-</span>
                         <input
@@ -106,7 +106,7 @@ const FilterBar = ({ onFilter, loading }) => {
                             value={filters.ageMax}
                             onChange={handleChange}
                             placeholder="Max"
-                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '60px', color: '#334155' }}
+                            style={{ padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem', width: '60px' }}
                         />
                     </div>
                 </div>

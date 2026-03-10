@@ -11,7 +11,7 @@ import {
     Legend,
     ArcElement,
 } from 'chart.js';
-import { Bar, Line, Doughnut, Pie, Bubble } from 'react-chartjs-2';
+import { Bar, Line, Doughnut, Pie, Bubble, Scatter } from 'react-chartjs-2';
 
 ChartJS.register(
     CategoryScale,
@@ -24,6 +24,16 @@ ChartJS.register(
     Legend,
     ArcElement
 );
+
+// Set Global Chart.js defaults for Dark Theme
+ChartJS.defaults.color = '#94a3b8'; // Slate 400 for text
+ChartJS.defaults.borderColor = 'rgba(255, 255, 255, 0.05)'; // Faint grids
+ChartJS.defaults.font.family = "'Inter', sans-serif";
+ChartJS.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+ChartJS.defaults.plugins.tooltip.titleColor = '#f8fafc';
+ChartJS.defaults.plugins.tooltip.bodyColor = '#f8fafc';
+ChartJS.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+ChartJS.defaults.plugins.tooltip.borderWidth = 1;
 
 export const CategoryBarChart = ({ data }) => {
     if (!data || !data.sales_by_category) return null;
@@ -200,3 +210,90 @@ export const AgeSpendingChart = ({ data }) => {
 
     return <div style={{ height: '300px', width: '100%' }}><Bar options={options} data={chartData} /></div>;
 }
+
+export const PriceSensitivityScatterChart = ({ data }) => {
+    if (!data || !data.price_sensitivity) return null;
+
+    // Group by exact price & quantity coordinates to count frequency
+    const groupedData = data.price_sensitivity.reduce((acc, item) => {
+        const key = `${item.price_per_unit}-${item.quantity}`;
+        if (!acc[key]) {
+            acc[key] = {
+                x: item.price_per_unit,
+                y: item.quantity,
+                category: item.product_category, // Just take the first category encountered for that price point in this view
+                count: 0
+            };
+        }
+        acc[key].count++;
+        return acc;
+    }, {});
+
+    const bubbleData = Object.values(groupedData).map(item => {
+        // We scale the radius 'r' so bubbles don't get absurdly huge or stay too small
+        // Cap the max size and give a base min size
+        const minRadius = 4;
+        const scaledRadius = Math.min(minRadius + (item.count * 1.5), 30); 
+        
+        return {
+            x: item.x,
+            y: item.y,
+            r: scaledRadius,
+            category: item.category,
+            transactionCount: item.count
+        };
+    });
+
+    const chartData = {
+        datasets: [
+            {
+                label: 'Price vs Quantity (Bubble)',
+                data: bubbleData,
+                backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                borderColor: 'rgba(239, 68, 68, 1)',
+                borderWidth: 1,
+                hoverBackgroundColor: 'rgba(239, 68, 68, 0.8)',
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Price vs. Quantity (Bubble Size = # of Transactions)' },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const pointInfo = context.raw;
+                        return `Price: $${pointInfo.x}, Qty: ${pointInfo.y} | Transactions: ${pointInfo.transactionCount}`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Price Per Unit ($)'
+                },
+                beginAtZero: true,
+                grace: '10%' // Add padding so bubbles don't get cut off on the right
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Quantity Sold'
+                },
+                beginAtZero: true,
+                grace: '20%', // Add padding so highest bubbles don't get cut off at the top
+                ticks: {
+                    stepSize: 1 // Quantity is always a whole number
+                }
+            }
+        }
+    };
+
+    return <div style={{ height: '300px', width: '100%' }}><Bubble options={options} data={chartData} /></div>;
+};

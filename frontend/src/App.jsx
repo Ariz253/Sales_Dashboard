@@ -9,6 +9,7 @@ import {
   GenderDoughnutChart,
   AgeGroupPieChart,
   AgeSpendingChart,
+  PriceSensitivityScatterChart,
 } from './components/AnalyticsCharts';
 import { TrendingUp, DollarSign, ShoppingBag, Maximize2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -83,7 +84,9 @@ function App() {
 
     switch (expandedChart) {
       case 'category':
-        return <CategoryBarChart data={metrics} />;
+        return Object.keys(metrics.sales_by_category || {}).length === 1 
+            ? <PriceSensitivityScatterChart data={metrics} /> 
+            : <CategoryBarChart data={metrics} />;
       case 'daily':
         return <DailySalesLineChart data={metrics} />;
       case 'age':
@@ -99,7 +102,10 @@ function App() {
 
   const getExpandedTitle = () => {
     switch (expandedChart) {
-      case 'category': return 'Revenue by Category';
+      case 'category': 
+          return Object.keys(metrics?.sales_by_category || {}).length === 1 
+              ? 'Price vs. Quantity' 
+              : 'Revenue by Category';
       case 'daily': return 'Daily Sales Trend';
       case 'age': return 'Age Group Analysis';
       case 'gender': return 'Gender Distribution';
@@ -159,7 +165,11 @@ function App() {
 
           <div className="grid grid-cols-2">
             <ChartCard onMaximize={() => setExpandedChart('category')}>
-              <CategoryBarChart data={metrics} />
+              {Object.keys(metrics.sales_by_category || {}).length === 1 ? (
+                 <PriceSensitivityScatterChart data={metrics} />
+              ) : (
+                 <CategoryBarChart data={metrics} />
+              )}
             </ChartCard>
             <ChartCard onMaximize={() => setExpandedChart('age')}>
               <h3 className="stat-title" style={{ textAlign: 'center' }}>Age Group Analysis</h3>
